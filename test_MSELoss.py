@@ -1,7 +1,7 @@
 # ---------------
 # Xavier Robbins
 # CS3450-031 
-# Lab 6 : Implementing Forward, Deriving All Unit Tests
+# Lab 9 : Training FMNIST
 # Apr 25 2023
 # ---------------
 
@@ -24,10 +24,12 @@ class TestMSE(TestCase):
 
         self.mse = layers.MSELoss(self.o, self.y)
 
+    
     def test_forward(self):
         self.mse.forward()
         np.testing.assert_allclose(self.mse.output.numpy(), np.array([3]))
 
+    
     def test_backward(self):
         self.mse.forward()
         self.mse.accumulate_grad(torch.tensor([1]))
@@ -36,6 +38,7 @@ class TestMSE(TestCase):
         np.testing.assert_allclose(self.o.grad.numpy(), np.array([[-1], [-2], [2]]))
         np.testing.assert_allclose(self.y.grad.numpy(), np.array([[-1], [-2], [2]]))
 
+    
     def test_step(self):
         self.mse.forward()
         self.mse.accumulate_grad(torch.tensor([1]))
