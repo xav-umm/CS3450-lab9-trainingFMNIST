@@ -1,7 +1,7 @@
 # ---------------
 # Xavier Robbins
 # CS3450-031 
-# Lab 6 : Implementing Forward, Deriving All Unit Tests
+# Lab 9 : Training FMNIST
 # Apr 25 2023
 # ---------------
 
@@ -23,10 +23,12 @@ class TestRegularize(TestCase):
 
         self.regularize = layers.Regularization(self.W, self.decay)
 
+    
     def test_forward(self):
         self.regularize.forward()
         np.testing.assert_allclose(self.regularize.output.numpy(), np.array([7.5]))
 
+    
     def test_backward(self):
         self.regularize.forward()
         self.regularize.accumulate_grad(torch.tensor([5]))
@@ -34,6 +36,7 @@ class TestRegularize(TestCase):
 
         np.testing.assert_allclose(self.W.grad.numpy(), np.array([[1, 3], [3, 4], [6, 2]]))
 
+    
     def test_step(self): 
         self.regularize.forward()
         self.regularize.accumulate_grad(torch.tensor([5]))
