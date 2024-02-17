@@ -1,7 +1,7 @@
 # ---------------
 # Xavier Robbins
 # CS3450-031 
-# Lab 6 : Implementing Forward, Deriving All Unit Tests
+# Lab 9 : Training FMNIST
 # Apr 25 2023
 # ---------------
 
@@ -24,11 +24,13 @@ class TestSoftmax(TestCase):
 
         self.softmax = layers.Softmax(self.v, self.y, self.epsilon)
 
+    
     def test_forward(self):
         self.softmax.forward()
         np.testing.assert_allclose(self.softmax.classifications.numpy(), np.array([[1.266417e-14], [0.999999], [5.602796e-09]]), rtol=1e-5)
         np.testing.assert_allclose(self.softmax.output.numpy(), np.array([7.751]), rtol=1e-4)
 
+    
     def test_backward(self):
         self.softmax.forward()
         self.softmax.accumulate_grad(torch.tensor([1]))
