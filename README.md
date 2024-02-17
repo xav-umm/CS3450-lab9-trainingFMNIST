@@ -1,8 +1,8 @@
 # CS3450-lab9-trainingFMNIST
 Final lab for CS3450 - Deep Learning at MSOE (Spring Trimester 2023)
 
-This final lab culminates the trimester of Deep Learning at MSOE, using object-oriented neural network components implemented by hand using PyTorch in previous labs from the trimester. 
-This lab involves training and evaluating a custom, object-oriented implementation of a nueral network on the Fashion MNIST and CIFAR-10 dataset. 
+This final lab culminates the trimester of Deep Learning at MSOE, using object-oriented neural network components implemented by hand with PyTorch in previous labs from the trimester. 
+This lab involves training and evaluating a custom, object-oriented implementation of a nueral network on the well known Fashion MNIST and CIFAR-10 datasets. 
 
 **File Descriptions :** 
 - client_cifar10.py : Python file utilizing `network.py` and `layers.py` to build and train a fully connected neural network on the well known CIFAR-10 dataset. This file was implemented on MSOE's supercomputer ROSIE, which held the CIFAR-10 dataset and allowed for training in a GPU environment. Included in this file are some methods for creating simple testing datasets (`create_linear_training_data()`, `create_folded_training_data()`, and `create_square()`) to verify the functionality of the network before training on the CIFAR-10 dataset. The CIFAR-10 dataset is loaded from ROSIE's file storage and flattened for training with the `load_dataset_flattened()` method. The network is then built and trained in the main method of the file.
