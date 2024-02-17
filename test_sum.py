@@ -1,7 +1,7 @@
 # ---------------
 # Xavier Robbins
 # CS3450-031 
-# Lab 6 : Implementing Forward, Deriving All Unit Tests
+# Lab 9 : Training FMNIST
 # Apr 25 2023
 # ---------------
 
@@ -13,8 +13,7 @@ import unittest
 
 class TestSum(TestCase):
     """
-    Please note: I (Dr. Yoder) may have assumed different parameters for my network than you use.
-    TODO: Update these tests to work with YOUR definitions of arguments and variables.
+    Tests the summation network layer.
     """
     def setUp(self):
         self.a = layers.Input((2,1), train=True)
@@ -23,10 +22,12 @@ class TestSum(TestCase):
         self.b.set(torch.tensor([[1],[2]], dtype=torch.float64))
         self.sum = layers.Sum(self.a, self.b)
 
+    
     def test_forward(self):
         self.sum.forward()
         np.testing.assert_allclose(self.sum.output.numpy(), np.array([[4],[7]]))
 
+    
     def test_backward(self):
         self.sum.forward()
         self.sum.accumulate_grad(torch.ones(2,1))
@@ -35,6 +36,7 @@ class TestSum(TestCase):
         np.testing.assert_allclose(self.a.grad.numpy(), np.ones((2,1)))
         np.testing.assert_allclose(self.b.grad.numpy(), np.ones((2,1)))
 
+    
     def test_step(self):
         self.sum.forward()
         self.sum.accumulate_grad(np.ones((2,1)))
