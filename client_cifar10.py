@@ -156,7 +156,6 @@ def load_dataset_flattened(train=True,dataset='Fashion-MNIST',download=False):
 class Timer(object):
     """
     A simple timer class used to keep track of the total elapsed time to 
-    :param object: 
     """
     def __init__(self, name=None, filename=None):
         self.name = name
@@ -174,7 +173,7 @@ class Timer(object):
             with open(self.filename,'a') as file:
                 print(str(datetime.datetime.now())+": ",message,file=file)
 
-# Training loop -- fashion-MNIST
+# Training loop -- CIFAR-10
 if __name__ == '__main__':
     # Your client code that uses your classes to stitch together a specific network 
     # should be here, and not in a helper method.  This will give you access
