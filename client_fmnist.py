@@ -1,9 +1,6 @@
 import torch
 import numpy as np # For loading cached datasets
 import matplotlib.pyplot as plt
-# import torchvision # For loading initial datasets
-#                    # Commented out because Spring 2023 this is failing to load
-#                    # in the conda-cs3450 environment
 import time
 import warnings
 import os.path
@@ -11,13 +8,12 @@ import os.path
 import network
 import layers
 
-# warnings.filterwarnings('ignore')  # If you see warnings that you know you can ignore, it can be useful to enable this.
 
 EPOCHS = 1
 # For simple regression problem
 TRAINING_POINTS = 1000
 
-# For fashion-MNIST and similar problems
+# Fashion-MNIST and CIFAR-10 paths data paths (ROSIE)
 DATA_ROOT = '/data/cs3450/data/'
 FASHION_MNIST_TRAINING = '/data/cs3450/data/fashion_mnist_flattened_training.npz'
 FASHION_MNIST_TESTING = '/data/cs3450/data/fashion_mnist_flattened_testing.npz'
@@ -26,6 +22,7 @@ CIFAR10_TESTING = '/data/cs3450/data/cifar10_flattened_testing.npz'
 CIFAR100_TRAINING = '/data/cs3450/data/cifar100_flattened_training.npz'
 CIFAR100_TESTING = '/data/cs3450/data/cifar100_flattened_testing.npz'
 
+# Set the default device of tensors to the GPU if available. 
 # With this block, we don't need to set device=DEVICE for every tensor.
 torch.set_default_dtype(torch.float32)
 if torch.cuda.is_available():
@@ -95,6 +92,7 @@ def create_square():
 
 def load_dataset_flattened(train=True,dataset='Fashion-MNIST',download=False):
     """
+    Loads the desired dataset from the previously specified ROSIE data paths. 
     :param train: True for training, False for testing
     :param dataset: 'Fashion-MNIST', 'CIFAR-10', or 'CIFAR-100'
     :param download: True to download. Keep to false afterwords to avoid unneeded downloads.
@@ -156,6 +154,9 @@ def load_dataset_flattened(train=True,dataset='Fashion-MNIST',download=False):
     return x, y
 
 class Timer(object):
+    """
+    A simple timer class
+    """
     def __init__(self, name=None, filename=None):
         self.name = name
         self.filename = filename
@@ -172,15 +173,11 @@ class Timer(object):
             with open(self.filename,'a') as file:
                 print(str(datetime.datetime.now())+": ",message,file=file)
 
+
 # Training loop -- fashion-MNIST
-# def main_linear():
 if __name__ == '__main__':
-    # Once you start this code, comment out the method name and uncomment the
-    # "if __name__ == '__main__' line above to make this a main block.
-    # The code in this section should NOT be in a helper method.
-    #
-    # In particular, your client code that uses your classes to stitch together a specific network 
-    # _should_ be here, and not in a helper method.  This will give you access
+    # Your client code that uses your classes to stitch together a specific network 
+    # should be here, and not in a helper method.  This will give you access
     # to the layers of your network for debugging purposes.
 
     with Timer('Total time'):
@@ -239,7 +236,7 @@ if __name__ == '__main__':
         losses = [] # These are loss for the last batch in the epoch not over the whole training set
         test_losses = []
         
-        # TODO: Train your network.
+        # Train the network.
         with Timer('Training time'):
             for e in range(1, epochs + 1):
                 num_correct = 0
@@ -288,26 +285,24 @@ if __name__ == '__main__':
         peak_bytes_allocated = torch.cuda.memory_stats()['active_bytes.all.peak']
         print(f"Peak GPU memory allocated: {peak_bytes_allocated} Bytes")
 
-    pass # You may wish to keep this line as a point to place a debugging breakpoint.
 
-import matplotlib.pyplot as plt
+    plt.plot(range(len(accuracies)), accuracies)
+    plt.xlabel('Epochs')
+    plt.ylabel('Accuracy')
+    plt.title('Fashion-MNIST Training Accuracy')
 
-plt.plot(range(len(accuracies)), accuracies)
-plt.xlabel('Epochs')
-plt.ylabel('Accuracy')
-plt.title('Fashion-MNIST Training Accuracy')
+    plt.plot(range(len(losses)), losses)
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.title('Fashion-MNIST Training Loss')
 
-plt.plot(range(len(losses)), losses)
-plt.xlabel('Epochs')
-plt.ylabel('Loss')
-plt.title('Fashion-MNIST Training Loss')
+    plt.plot(range(len(test_accuracies)), test_accuracies)
+    plt.xlabel('Epochs')
+    plt.ylabel('Accuracy')
+    plt.title('Fashion-MNIST Testing Accuracy')
 
-plt.plot(range(len(test_accuracies)), test_accuracies)
-plt.xlabel('Epochs')
-plt.ylabel('Accuracy')
-plt.title('Fashion-MNIST Testing Accuracy')
+    plt.plot(range(len(test_losses)), test_losses)
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.title('Fashion-MNIST Testing Loss')
 
-plt.plot(range(len(test_losses)), test_losses)
-plt.xlabel('Epochs')
-plt.ylabel('Loss')
-plt.title('Fashion-MNIST Testing Loss')
