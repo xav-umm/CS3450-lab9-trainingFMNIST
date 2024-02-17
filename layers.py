@@ -1,19 +1,15 @@
 # ---------------
 # Xavier Robbins
-# CS3450-031 
-# Lab 6 : Implementing Forward, Deriving All Unit Tests
+# CS3450
+# Lab 9 : Training FMNIST
 # Apr 25 2023
 # ---------------
 
 import torch
 from numpy import newaxis as np_newaxis
 
-# TODO: Please be sure to read the comments in the main lab and think about your design before
-# you begin to implement this part of the lab.
-
 # Layers in this file are arranged in roughly the order they
 # would appear in a network.
-
 
 class Layer: 
     def __init__(self, output_shape):
@@ -25,25 +21,28 @@ class Layer:
         self.output_shape = output_shape if type(output_shape) is tuple else (output_shape, 1)
         self.grad = torch.zeros(self.output_shape, dtype=torch.float64)
 
+    
     def accumulate_grad(self, accum):
         """
         This method should accumulate its grad attribute with the value provided.
         """
-        # accum = torch.sum(accum, dim=1)
         assert accum.shape == self.grad.shape, f'Shape to accumulate ({accum.shape}) does not match layer grad shape ({self.grad.shape})'
         self.grad += accum 
 
+    
     def clear_grad(self):
         """
         Sets the grad to zeros in the shape of output shape.
         """
         self.grad = torch.zeros(self.output_shape, dtype=torch.float64)
 
+    
     def step(self, step_size):
         """
         Most tensors do nothing during a step so we simply do nothing in the default case.
         """
         pass
+
 
 class Input(Layer):
     def __init__(self, output_shape, train=True):
@@ -57,6 +56,7 @@ class Input(Layer):
         self.train = train
         self.output = torch.zeros(output_shape)
 
+    
     def set(self, output):
         """
         Sets the values of the output of the layer to the given output
@@ -66,6 +66,7 @@ class Input(Layer):
         assert self.output_shape == output.shape, f'Provided output shape ({output.shape}) does not match expected shape ({self.output_shape})'
         self.output = output
 
+    
     def randomize(self):
         """
         Sets the output of this input layer to random values sampled from the standard normal
@@ -73,6 +74,7 @@ class Input(Layer):
         """
         self.output = torch.rand(self.output_shape, dtype=torch.float64) * 0.1
 
+    
     def forward(self):
         """
         In forward input values do not perform any operations, simply pass
@@ -80,6 +82,7 @@ class Input(Layer):
         # Does an input layer do anything during the forward pass? No
         pass
 
+    
     def backward(self):
         """
         This method does nothing as the Input layer should have already received its output
@@ -87,6 +90,7 @@ class Input(Layer):
         """
         pass
 
+    
     def step(self, step_size):
         """
         This method should have a precondition that the gradients have already been computed
@@ -113,17 +117,17 @@ class Linear(Layer):
         self.b = b
         self.output = self.output_shape
 
+    
     def forward(self):
         """
         Performs the forward pass calculation for a linear layer
         """
         self.output = torch.matmul(self.W.output, self.x.output) + self.b.output
 
+    
     def backward(self):
         """
-        TODO: Accept any arguments specific to this method.
-        TODO: This network's grad attribute should already have been accumulated before calling
-        this method.  This method should compute its own internal and input gradients
+        This method computes its own internal and input gradients
         and accumulate the input gradients into the previous layer.
         """
         self.dx = torch.matmul(torch.transpose(self.W.output, 0, 1), self.grad)
@@ -145,12 +149,14 @@ class ReLU(Layer):
         Layer.__init__(self, u.output_shape) 
         self.u = u
 
+    
     def forward(self):
         """
         Performs the forward pass ReLU operation on the previously set layers output
         """
         self.output = torch.clamp(self.u.output, min=0)
 
+    
     def backward(self):
         """
         This network's grad attribute should already have been accumulated before calling
@@ -181,17 +187,17 @@ class MSELoss(Layer):
         self.o = o
         self.output = torch.zeros(self.output_shape)
 
+    
     def forward(self):
         """
         Perform MSE forward pass operations on using the set initialized layer outputs 
         """
         self.output = torch.mean((self.o.output - self.y.output) ** 2)
 
+    
     def backward(self):
         """
-        TODO: Accept any arguments specific to this method.
-        TODO: This network's grad attribute should already have been accumulated before calling
-        this method.  This method should compute its own internal and input gradients
+        This method computes its own internal and input gradients
         and accumulate the input gradients into the previous layer.
         """
         self.do = self.grad * (self.o.output - self.y.output)
@@ -213,6 +219,7 @@ class Regularization(Layer):
         self.decay = decay
         self.output = torch.zeros(self.output_shape)
 
+    
     def forward(self):
         """
         Performs the frobenius norm over the set layer of weights and multiplies that by the 
@@ -220,11 +227,10 @@ class Regularization(Layer):
         """
         self.output = self.decay * torch.sum(self.W.output ** 2)
 
+    
     def backward(self):
         """
-        TODO: Accept any arguments specific to this method.
-        TODO: This network's grad attribute should already have been accumulated before calling
-        this method.  This method should compute its own internal and input gradients
+        This method computes its own internal and input gradients
         and accumulate the input gradients into the previous layer.
         """
         self.dW = self.W.output * (2 * self.decay * self.grad)
@@ -270,6 +276,7 @@ class Softmax(Layer):
         self.classifications = torch.zeros(v.output_shape)
         self.output = torch.zeros(self.output_shape)
 
+    
     def forward(self):
         """
         Performs forward pass operations to calculate the softmax classifications and cross entropy loss
@@ -292,12 +299,10 @@ class Softmax(Layer):
         # print(f'intermediate : {intermediate}')
         self.output = torch.mean(intermediate) # Cross-entropy loss
 
+    
     def backward(self):
         """
-        TODO: Accept any arguments specific to this method.
-        TODO: Set this layer's output based on the outputs of the layers that feed into it.
-        TODO: This network's grad attribute should already have been accumulated before calling
-        this method.  This method should compute its own internal and input gradients
+        This method computes its own internal and input gradients
         and accumulate the input gradients into the previous layer.
         """
         self.dv = (self.y.output - self.classifications) * -1 * self.grad
@@ -326,9 +331,7 @@ class Sum(Layer):
 
     def backward(self):
         """
-        TODO: Accept any arguments specific to this method.
-        TODO: This network's grad attribute should already have been accumulated before calling
-        this method.  This method should compute its own internal and input gradients
+        This method computes its own internal and input gradients
         and accumulate the input gradients into the previous layer.
         """
         assert self.grad != torch.zeros(self.grad.shape), f'Must have grads accumulated!!!'
@@ -337,3 +340,4 @@ class Sum(Layer):
 
         self.ds2 = self.grad * 1
         self.s2.accumulate_grad(self.ds2)
+
