@@ -155,7 +155,7 @@ def load_dataset_flattened(train=True,dataset='Fashion-MNIST',download=False):
 
 class Timer(object):
     """
-    A simple timer class used to keep track of the total elapsed time to 
+    A simple timer class 
     """
     def __init__(self, name=None, filename=None):
         self.name = name
