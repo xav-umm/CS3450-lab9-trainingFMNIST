@@ -1,7 +1,7 @@
 # ---------------
 # Xavier Robbins
 # CS3450-031 
-# Lab 6 : Implementing Forward, Deriving All Unit Tests
+# Lab 9 : Training FMNIST
 # Apr 25 2023
 # ---------------
 
@@ -66,10 +66,12 @@ class TestNetwork(TestCase):
         self.network.add(self.sum_regularize)
         self.network.set_output(self.output)
 
+    
     def test_forward(self):
         self.network.forward(torch.tensor([[1], [2]], dtype=torch.float64))
         np.testing.assert_allclose(self.network.output.numpy(), np.array([263]))
 
+    
     def test_backward(self):
         self.network.forward(torch.tensor([[1], [2]], dtype=torch.float64))
         self.network.backward()
