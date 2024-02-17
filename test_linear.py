@@ -1,7 +1,7 @@
 # ---------------
 # Xavier Robbins
 # CS3450-031 
-# Lab 6 : Implementing Forward, Deriving All Unit Tests
+# Lab 9 : Training FMNIST
 # Apr 25 2023
 # ---------------
 
@@ -27,10 +27,12 @@ class TestLinear(TestCase):
 
         self.linear = layers.Linear(self.x, self.W, self.b)
 
+    
     def test_forward(self):
         self.linear.forward()
         np.testing.assert_allclose(self.linear.output.numpy(), np.array([[15], [24], [21]]))
 
+    
     def test_backward(self):
         self.linear.forward()
         self.linear.accumulate_grad(torch.ones((3, 1), dtype=torch.float64))
@@ -40,6 +42,7 @@ class TestLinear(TestCase):
         np.testing.assert_allclose(self.x.grad.numpy(), np.array([[10], [9]]))
         np.testing.assert_allclose(self.b.grad.numpy(), np.ones((3, 1)))
 
+    
     def test_step(self):
         self.linear.forward()
         self.linear.accumulate_grad(torch.ones((3, 1), dtype=torch.float64))
