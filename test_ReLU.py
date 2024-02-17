@@ -1,7 +1,7 @@
 # ---------------
 # Xavier Robbins
 # CS3450-031 
-# Lab 6 : Implementing Forward, Deriving All Unit Tests
+# Lab 9 : Training FMNIST
 # Apr 25 2023
 # ---------------
 
@@ -21,10 +21,12 @@ class TestReLU(TestCase):
         
         self.relu = layers.ReLU(self.u)
 
+    
     def test_forward(self):
         self.relu.forward()
         np.testing.assert_allclose(self.relu.output.numpy(), np.array([[1], [3], [0]]))
 
+    
     def test_backward(self):
         self.relu.forward()
         self.relu.accumulate_grad(torch.tensor([[0.1], [0.1], [0.1]], dtype=torch.float64))
@@ -32,6 +34,7 @@ class TestReLU(TestCase):
 
         np.testing.assert_allclose(self.u.grad.numpy(), np.array([[0.1], [0.1], [0]]))
 
+    
     def test_step(self):
         self.relu.forward()
         self.relu.accumulate_grad(torch.tensor([[0.1], [0.1], [0.1]], dtype=torch.float64))
